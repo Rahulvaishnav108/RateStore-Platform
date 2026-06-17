@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.0%;
+  }
+
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    @apply w-1.5 h-1.5;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-100 dark:bg-surface-800;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-300 dark:bg-surface-600 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface-400 dark:bg-surface-500;
+  }
+
+  /* Focus visible styles */
+  [data-focus-visible-added] {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Button variants */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-all duration-200 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-primary;
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 border border-input focus-visible:outline-ring;
+  }
+
+  .btn-destructive {
+    @apply btn bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 focus-visible:outline-destructive;
+  }
+
+  .btn-outline {
+    @apply btn border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground focus-visible:outline-ring;
+  }
+
+  .btn-ghost {
+    @apply btn hover:bg-accent hover:text-accent-foreground focus-visible:outline-ring;
+  }
+
+  .btn-link {
+    @apply btn underline-offset-4 hover:underline text-primary px-0 shadow-none focus-visible:outline-primary;
+  }
+
+  /* Input styles */
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200;
+  }
+
+  /* Card styles */
+  .card {
+    @apply rounded-xl border bg-card text-card-foreground shadow-card;
+  }
+
+  .card-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+
+  .card-title {
+    @apply text-lg font-semibold leading-none tracking-tight;
+  }
+
+  .card-description {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .card-content {
+    @apply p-6 pt-0;
+  }
+
+  .card-footer {
+    @apply flex items-center p-6 pt-0;
+  }
+
+  /* Badge variants */
+  .badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+
+  .badge-default {
+    @apply badge border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
+  }
+
+  .badge-secondary {
+    @apply badge border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+
+  .badge-destructive {
+    @apply badge border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80;
+  }
+
+  .badge-outline {
+    @apply badge text-foreground border-border;
+  }
+
+  /* Role specific badges */
+  .badge-admin {
+    @apply badge border-transparent bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400;
+  }
+
+  .badge-user {
+    @apply badge border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400;
+  }
+
+  .badge-store_owner {
+    @apply badge border-transparent bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400;
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    @apply animate-pulse rounded-md bg-surface-200 dark:bg-surface-700;
+  }
+
+  /* Navigation styles */
+  .nav-link {
+    @apply flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring;
+  }
+
+  .nav-link-active {
+    @apply nav-link bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  /* Utility classes */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .container-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+}
