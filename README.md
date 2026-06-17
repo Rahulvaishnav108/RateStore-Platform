@@ -1,0 +1,1 @@
+# RateStore-Platform
