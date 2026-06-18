@@ -29,6 +29,20 @@ const createUser = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+const updateUser = async (req, res, next) => {
+  try {
+    const user = await adminService.updateUser(req.params.id, req.body);
+    return success(res, user, 'User updated successfully.');
+  } catch (err) { next(err); }
+};
+
+const deleteUser = async (req, res, next) => {
+  try {
+    await adminService.deleteUser(req.params.id);
+    return success(res, null, 'User deleted successfully.');
+  } catch (err) { next(err); }
+};
+
 const getStores = async (req, res, next) => {
   try {
     const { stores, total, page, limit } = await adminService.getStores(req.query);
@@ -43,4 +57,29 @@ const createStore = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { getDashboard, getUsers, getUserById, createUser, getStores, createStore };
+const updateStore = async (req, res, next) => {
+  try {
+    const store = await adminService.updateStore(req.params.id, req.body);
+    return success(res, store, 'Store updated successfully.');
+  } catch (err) { next(err); }
+};
+
+const deleteStore = async (req, res, next) => {
+  try {
+    await adminService.deleteStore(req.params.id);
+    return success(res, null, 'Store deleted successfully.');
+  } catch (err) { next(err); }
+};
+
+module.exports = {
+  getDashboard,
+  getUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+  getStores,
+  createStore,
+  updateStore,
+  deleteStore,
+};

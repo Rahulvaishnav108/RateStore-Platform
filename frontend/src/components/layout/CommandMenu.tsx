@@ -16,6 +16,7 @@ import { Dialog, DialogContent } from "@/components/ui/Dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
 import { ROLES } from "@/config/constants";
+import { getChangePasswordPath } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 interface CommandMenuProps {
@@ -129,11 +130,11 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
   const actionCommands: CommandItem[] = [
     {
       id: "action-settings",
-      label: "Settings",
-      description: "Open settings page",
+      label: "Change Password",
+      description: "Update your account password",
       icon: FiSettings,
-      keywords: ["settings", "preferences", "config"],
-      action: () => navigate("/settings")
+      keywords: ["settings", "password", "security"],
+      action: () => navigate(getChangePasswordPath(user?.role))
     },
     {
       id: "action-logout",
@@ -143,6 +144,7 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
       keywords: ["logout", "signout", "exit"],
       action: () => {
         logout();
+        navigate('/login');
         onOpenChange(false);
       }
     },

@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   FiMenu, 
   FiSearch, 
@@ -6,7 +6,6 @@ import {
   FiMoon, 
   FiSun, 
   FiMonitor,
-  FiUser,
   FiSettings,
   FiLogOut,
   FiCommand
@@ -17,6 +16,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
+import { getChangePasswordPath } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 interface NavbarProps {
@@ -26,8 +26,14 @@ interface NavbarProps {
 }
 
 export function Navbar({ onMenuClick, onCommandClick, className }: NavbarProps) {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   
   const themeIcons = {
     light: FiSun,
@@ -162,21 +168,19 @@ export function Navbar({ onMenuClick, onCommandClick, className }: NavbarProps) 
               </div>
 
               {/* Menu items */}
-              <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent focus:bg-accent outline-none">
-                <FiUser className="h-4 w-4" />
-                Profile
-              </DropdownMenu.Item>
-              
-              <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent focus:bg-accent outline-none">
+              <DropdownMenu.Item
+                className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent focus:bg-accent outline-none"
+                onClick={() => navigate(getChangePasswordPath(user?.role))}
+              >
                 <FiSettings className="h-4 w-4" />
-                Settings
+                Change Password
               </DropdownMenu.Item>
 
               <DropdownMenu.Separator className="h-px bg-border my-1" />
 
               <DropdownMenu.Item 
                 className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent focus:bg-accent outline-none text-destructive"
-                onClick={logout}
+                onClick={handleLogout}
               >
                 <FiLogOut className="h-4 w-4" />
                 Logout

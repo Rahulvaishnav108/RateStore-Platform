@@ -17,6 +17,41 @@ const registerValidator = [
     .withMessage('Password must contain at least one uppercase letter.')
     .matches(/[!@#$%^&*(),.?":{}|<>]/)
     .withMessage('Password must contain at least one special character.'),
+  body('role')
+    .optional()
+    .isIn(['admin', 'user', 'store_owner'])
+    .withMessage('Invalid role selected.'),
+];
+
+const updateUserValidator = [
+  body('name')
+    .optional()
+    .trim()
+    .isLength({ min: 20, max: 60 })
+    .withMessage('Name must be between 20 and 60 characters.'),
+  body('email')
+    .optional()
+    .trim()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Invalid email address.'),
+  body('address')
+    .optional()
+    .trim()
+    .isLength({ max: 400 })
+    .withMessage('Address must not exceed 400 characters.'),
+  body('role')
+    .optional()
+    .isIn(['admin', 'user', 'store_owner'])
+    .withMessage('Invalid role selected.'),
+  body('password')
+    .optional()
+    .isLength({ min: 8, max: 16 })
+    .withMessage('Password must be 8-16 characters.')
+    .matches(/[A-Z]/)
+    .withMessage('Password must contain at least one uppercase letter.')
+    .matches(/[!@#$%^&*(),.?":{}|<>]/)
+    .withMessage('Password must contain at least one special character.'),
 ];
 
 const loginValidator = [
@@ -35,4 +70,4 @@ const changePasswordValidator = [
     .withMessage('New password must contain at least one special character.'),
 ];
 
-module.exports = { registerValidator, loginValidator, changePasswordValidator };
+module.exports = { registerValidator, loginValidator, updateUserValidator, changePasswordValidator };

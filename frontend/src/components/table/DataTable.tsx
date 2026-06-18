@@ -6,6 +6,7 @@ import {
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
+  type OnChangeFn,
   type SortingState,
   type VisibilityState,
   type PaginationState,
@@ -36,6 +37,7 @@ interface DataTableProps<TData, TValue> {
   sorting?: SortingState;
   columnVisibility?: VisibilityState;
   onColumnVisibilityChange?: (visibility: VisibilityState) => void;
+  totalRows?: number;
   emptyMessage?: string;
   className?: string;
 }
@@ -52,6 +54,7 @@ export function DataTable<TData, TValue>({
   sorting = [],
   columnVisibility = {},
   onColumnVisibilityChange,
+  totalRows,
   emptyMessage = "No data found",
   className,
 }: DataTableProps<TData, TValue>) {
@@ -59,6 +62,24 @@ export function DataTable<TData, TValue>({
     pageIndex,
     pageSize,
   });
+
+  React.useEffect(() => {
+    setPagination({ pageIndex, pageSize });
+  }, [pageIndex, pageSize]);
+
+  const handleSortingChange: OnChangeFn<SortingState> | undefined = onSortingChange
+    ? (updater) => {
+        const nextSorting = typeof updater === "function" ? updater(sorting) : updater;
+        onSortingChange(nextSorting);
+      }
+    : undefined;
+
+  const handleColumnVisibilityChange: OnChangeFn<VisibilityState> | undefined = onColumnVisibilityChange
+    ? (updater) => {
+        const nextVisibility = typeof updater === "function" ? updater(columnVisibility) : updater;
+        onColumnVisibilityChange(nextVisibility);
+      }
+    : undefined;
 
   const table = useReactTable({
     data,
@@ -72,8 +93,8 @@ export function DataTable<TData, TValue>({
       setPagination(newPagination);
       onPaginationChange?.(newPagination);
     },
-    onSortingChange,
-    onColumnVisibilityChange,
+    onSortingChange: handleSortingChange,
+    onColumnVisibilityChange: handleColumnVisibilityChange,
     state: {
       pagination,
       sorting,
@@ -82,6 +103,10 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     manualSorting: true,
   });
+
+  const totalResults = totalRows ?? (pageCount > 0 ? pageCount * pagination.pageSize : data.length);
+  const visibleStart = totalResults === 0 ? 0 : pagination.pageIndex * pagination.pageSize + 1;
+  const visibleEnd = Math.min((pagination.pageIndex + 1) * pagination.pageSize, totalResults);
 
   if (loading) {
     return (
@@ -168,9 +193,7 @@ export function DataTable<TData, TValue>({
       {/* Pagination */}
       <div className="flex items-center justify-between space-x-2 p-6 border-t border-border">
         <div className="text-sm text-muted-foreground">
-          Showing {pagination.pageIndex * pagination.pageSize + 1} to{" "}
-          {Math.min((pagination.pageIndex + 1) * pagination.pageSize, data.length)} of{" "}
-          {pageCount > 0 ? pageCount * pagination.pageSize : data.length} results
+          Showing {visibleStart} to {visibleEnd} of {totalResults} results
         </div>
         
         <div className="flex items-center space-x-2">

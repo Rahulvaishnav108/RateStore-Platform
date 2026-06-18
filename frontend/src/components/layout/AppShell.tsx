@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
@@ -13,8 +13,20 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const { user } = useAuth();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
   const [commandOpen, setCommandOpen] = React.useState(false);
+  const [isDesktop, setIsDesktop] = React.useState(() =>
+    typeof window !== "undefined" ? window.matchMedia("(min-width: 768px)").matches : false
+  );
+
+  React.useEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)");
+    const handleChange = () => setIsDesktop(media.matches);
+    handleChange();
+    media.addEventListener("change", handleChange);
+    return () => media.removeEventListener("change", handleChange);
+  }, []);
 
   // Handle keyboard shortcuts
   React.useEffect(() => {
@@ -42,7 +54,7 @@ export function AppShell({ children }: AppShellProps) {
     <div className="min-h-screen bg-background">
       {/* Mobile sidebar backdrop */}
       <AnimatePresence>
-        {sidebarOpen && (
+        {sidebarOpen && !isDesktop && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -56,9 +68,9 @@ export function AppShell({ children }: AppShellProps) {
 
       {/* Sidebar */}
       <Sidebar 
-        isOpen={sidebarOpen} 
+        isOpen={isDesktop || sidebarOpen} 
         onClose={() => setSidebarOpen(false)}
-        className="fixed inset-y-0 left-0 z-50 w-64 md:relative md:z-auto"
+        className="fixed inset-y-0 left-0 z-50"
       />
 
       {/* Main content area */}

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 import api from '@/services/api';
 import { QUERY_KEYS, API_ENDPOINTS } from '@/config/constants';
 

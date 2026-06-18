@@ -6,7 +6,7 @@ import {
   FiUsers, 
   FiShoppingBag, 
   FiStar, 
-  FiBarChart3,
+  FiBarChart2,
   FiSettings,
   FiX,
   FiChevronLeft
@@ -16,7 +16,8 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/Tooltip";
 import { useAuth } from "@/hooks/useAuth";
-import { ROLES } from "@/config/constants";
+import { ROLES, ROLE_LABELS } from "@/config/constants";
+import { getChangePasswordPath } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -67,22 +68,8 @@ const navigationItems: NavItem[] = [
   {
     label: "Dashboard", 
     href: "/owner",
-    icon: FiHome,
+    icon: FiBarChart2,
     roles: [ROLES.STORE_OWNER]
-  },
-  {
-    label: "Analytics",
-    href: "/owner/analytics",
-    icon: FiBarChart3,
-    roles: [ROLES.STORE_OWNER]
-  },
-];
-
-const bottomItems: NavItem[] = [
-  {
-    label: "Settings",
-    href: "/settings",
-    icon: FiSettings,
   },
 ];
 
@@ -97,6 +84,14 @@ export function Sidebar({ isOpen = true, onClose, className }: SidebarProps) {
       !item.roles || item.roles.includes(user?.role || '')
     );
   }, [user?.role]);
+
+  const bottomItems: NavItem[] = React.useMemo(() => [
+    {
+      label: "Security",
+      href: getChangePasswordPath(user?.role),
+      icon: FiSettings,
+    },
+  ], [user?.role]);
 
   const isActive = (href: string) => {
     if (href === '/admin' || href === '/user' || href === '/owner') {
@@ -138,7 +133,9 @@ export function Sidebar({ isOpen = true, onClose, className }: SidebarProps) {
               </div>
               <div>
                 <h1 className="font-bold text-lg">RateStore</h1>
-                <p className="text-xs text-muted-foreground">Admin Panel</p>
+                <p className="text-xs text-muted-foreground">
+                  {user?.role ? ROLE_LABELS[user.role as keyof typeof ROLE_LABELS] : 'Panel'}
+                </p>
               </div>
             </motion.div>
           )}

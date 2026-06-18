@@ -13,4 +13,24 @@ const storeValidator = [
   body('owner_id').optional().isInt({ min: 1 }).withMessage('Owner ID must be a positive integer.'),
 ];
 
-module.exports = { storeValidator };
+const updateStoreValidator = [
+  body('name')
+    .optional()
+    .trim()
+    .isLength({ min: 20, max: 60 })
+    .withMessage('Store name must be between 20 and 60 characters.'),
+  body('email')
+    .optional()
+    .trim()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Invalid email address.'),
+  body('address')
+    .optional()
+    .trim()
+    .isLength({ max: 400 })
+    .withMessage('Address must not exceed 400 characters.'),
+  body('owner_id').optional().isInt({ min: 1 }).withMessage('Owner ID must be a positive integer.'),
+];
+
+module.exports = { storeValidator, updateStoreValidator };

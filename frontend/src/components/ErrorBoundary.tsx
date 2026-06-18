@@ -31,7 +31,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     });
 
     // Report to error tracking service
-    if (process.env.NODE_ENV === 'production') {
+    if (import.meta.env.PROD) {
       // You can integrate with Sentry, LogRocket, etc. here
       console.error('Production error:', {
         error: error.message,
@@ -68,7 +68,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
               </p>
             </div>
 
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <details className="text-left">
                 <summary className="cursor-pointer text-sm font-medium text-muted-foreground hover:text-foreground">
                   Error Details
@@ -106,7 +106,7 @@ export function useErrorHandler() {
   return React.useCallback((error: Error, errorInfo?: React.ErrorInfo) => {
     console.error('Manual error report:', error, errorInfo);
     
-    if (process.env.NODE_ENV === 'production') {
+    if (import.meta.env.PROD) {
       // Report to error tracking service
       console.error('Production error:', {
         error: error.message,

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { FiSearch, FiX } from "react-icons/fi";
 import { FormField } from "./FormField";
-import { cn } from "@/lib/utils";
 
 interface SearchFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   onSearch?: (query: string) => void;
@@ -21,14 +20,14 @@ const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
     ...props 
   }, ref) => {
     const [query, setQuery] = React.useState(String(value || ""));
-    const timeoutRef = React.useRef<NodeJS.Timeout>();
+    const timeoutRef = React.useRef<number | undefined>(undefined);
     
     React.useEffect(() => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
       
-      timeoutRef.current = setTimeout(() => {
+      timeoutRef.current = window.setTimeout(() => {
         onSearch?.(query);
       }, debounceMs);
       

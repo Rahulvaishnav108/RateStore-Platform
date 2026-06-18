@@ -1,4 +1,4 @@
-const StatCard = ({ icon: Icon, label, value, color = 'primary', trend }) => {
+const StatCard = ({ icon: Icon, label, value, color = 'primary' }) => {
   const colorMap = {
     primary: { bg: 'bg-primary-50', icon: 'bg-primary-600 text-white', text: 'text-primary-600' },
     amber: { bg: 'bg-amber-50', icon: 'bg-amber-500 text-white', text: 'text-amber-600' },

@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 import api from '@/services/api';
 import { QUERY_KEYS, API_ENDPOINTS } from '@/config/constants';
-import type { User, PaginatedResponse, QueryFilters, SortOptions, PaginationOptions } from '@/types';
+import type { User, UserDetail, PaginatedResponse, QueryFilters, SortOptions, PaginationOptions } from '@/types';
 
 interface UseUsersOptions extends PaginationOptions, SortOptions {
   filters?: QueryFilters;
@@ -73,6 +73,17 @@ export function useUpdateUser() {
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Failed to update user');
     },
+  });
+}
+
+export function useUserById(id: number | null) {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.USERS, id],
+    queryFn: async (): Promise<UserDetail> => {
+      const response = await api.get(`${API_ENDPOINTS.ADMIN.USERS}/${id}`);
+      return response.data.data;
+    },
+    enabled: id != null,
   });
 }
 

@@ -161,11 +161,34 @@ export interface PaginationOptions {
 }
 
 // Dashboard types
-export interface DashboardStats {
+export interface AdminDashboardStats {
   totalUsers: number;
+  totalAdmins: number;
   totalStores: number;
   totalRatings: number;
-  averageRating: number;
+  avgRating: number;
+}
+
+export interface OwnerRater {
+  id: number;
+  name: string;
+  email: string;
+  rating: number;
+  updated_at: string;
+}
+
+export interface OwnerDashboardData {
+  store: Store;
+  avg_rating: number;
+  total_ratings: number;
+  distribution: Record<number, number>;
+  raters: OwnerRater[];
+}
+
+export interface UserDetail extends User {
+  store_id?: number;
+  store_name?: string;
+  avg_rating?: number;
 }
 
 export interface ChartDataPoint {

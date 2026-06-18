@@ -82,6 +82,52 @@ const createUser = async ({ name, email, password, address, role }) => {
   return users[0];
 };
 
+const updateUser = async (id, { name, email, address, role }) => {
+  const [users] = await pool.query('SELECT id, name, email, address, role FROM users WHERE id = ?', [id]);
+  if (users.length === 0) {
+    const err = new Error('User not found.');
+    err.statusCode = 404;
+    throw err;
+  }
+  const current = users[0];
+  const nextEmail = email ?? current.email;
+
+  if (nextEmail !== current.email) {
+    const [duplicate] = await pool.query('SELECT id FROM users WHERE email = ? AND id != ?', [nextEmail, id]);
+    if (duplicate.length > 0) {
+      const err = new Error('Email already registered by another user.');
+      err.statusCode = 409;
+      throw err;
+    }
+  }
+
+  await pool.query(
+    'UPDATE users SET name = ?, email = ?, address = ?, role = ? WHERE id = ?',
+    [
+      name ?? current.name,
+      nextEmail,
+      address !== undefined ? address : current.address,
+      role ?? current.role,
+      id,
+    ]
+  );
+  const [updated] = await pool.query(
+    'SELECT id, name, email, address, role, created_at FROM users WHERE id = ?',
+    [id]
+  );
+  return updated[0];
+};
+
+const deleteUser = async (id) => {
+  const [result] = await pool.query('DELETE FROM users WHERE id = ?', [id]);
+  if (result.affectedRows === 0) {
+    const err = new Error('User not found.');
+    err.statusCode = 404;
+    throw err;
+  }
+  return true;
+};
+
 const getStores = async (query) => {
   const { page, limit, offset } = getPagination(query);
   const { sortBy, sortOrder } = getSorting(query, ['name', 'email', 'address', 'created_at', 'avg_rating']);
@@ -133,4 +179,47 @@ const createStore = async ({ name, email, address, owner_id }) => {
   return stores[0];
 };
 
-module.exports = { getDashboard, getUsers, getUserById, createUser, getStores, createStore };
+const updateStore = async (id, { name, email, address, owner_id }) => {
+  const [stores] = await pool.query('SELECT * FROM stores WHERE id = ?', [id]);
+  if (stores.length === 0) {
+    const err = new Error('Store not found.');
+    err.statusCode = 404;
+    throw err;
+  }
+  const current = stores[0];
+  const nextOwnerId = owner_id !== undefined ? owner_id : current.owner_id;
+
+  if (nextOwnerId) {
+    const [owners] = await pool.query("SELECT id FROM users WHERE id = ? AND role = 'store_owner'", [nextOwnerId]);
+    if (owners.length === 0) {
+      const err = new Error('Owner not found or is not a store owner.');
+      err.statusCode = 400;
+      throw err;
+    }
+  }
+
+  await pool.query(
+    'UPDATE stores SET name = ?, email = ?, address = ?, owner_id = ? WHERE id = ?',
+    [
+      name ?? current.name,
+      email ?? current.email,
+      address !== undefined ? address : current.address,
+      nextOwnerId || null,
+      id,
+    ]
+  );
+  const [updated] = await pool.query('SELECT * FROM stores WHERE id = ?', [id]);
+  return updated[0];
+};
+
+const deleteStore = async (id) => {
+  const [result] = await pool.query('DELETE FROM stores WHERE id = ?', [id]);
+  if (result.affectedRows === 0) {
+    const err = new Error('Store not found.');
+    err.statusCode = 404;
+    throw err;
+  }
+  return true;
+};
+
+module.exports = { getDashboard, getUsers, getUserById, createUser, updateUser, deleteUser, getStores, createStore, updateStore, deleteStore };

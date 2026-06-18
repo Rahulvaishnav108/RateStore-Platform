@@ -15,4 +15,11 @@ const updateRating = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { submitRating, updateRating };
+const deleteRating = async (req, res, next) => {
+  try {
+    await ratingService.deleteRating(req.params.id, req.user.id);
+    return success(res, null, 'Rating deleted successfully.');
+  } catch (err) { next(err); }
+};
+
+module.exports = { submitRating, updateRating, deleteRating };

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { motion } from "framer-motion";
 import { FiStar } from "react-icons/fi";
 import { Spinner } from "@/components/ui/Spinner";

@@ -7,5 +7,6 @@ const { validate } = require('../middleware/error.middleware');
 
 router.post('/', authenticate, authorize('user'), ratingValidator, validate, ratingController.submitRating);
 router.put('/:id', authenticate, authorize('user'), updateRatingValidator, validate, ratingController.updateRating);
+router.delete('/:id', authenticate, authorize('user'), ratingController.deleteRating);
 
 module.exports = router;

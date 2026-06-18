@@ -3,31 +3,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FiUser, FiMail, FiMapPin } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "./FormField";
-import { PasswordField } from "./PasswordField";
-import { createUserSchema, type CreateUserFormData } from "@/lib/validations";
+import { updateUserSchema, type UpdateUserFormData } from "@/lib/validations";
 import { VALIDATION } from "@/config/constants";
+import type { User } from "@/types";
 
-interface CreateUserFormProps {
-  onSubmit: (data: CreateUserFormData) => void;
+interface EditUserFormProps {
+  user: User;
+  onSubmit: (data: UpdateUserFormData) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }
 
-export function CreateUserForm({ onSubmit, onCancel, isLoading }: CreateUserFormProps) {
+export function EditUserForm({ user, onSubmit, onCancel, isLoading }: EditUserFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch
-  } = useForm<CreateUserFormData>({
-    resolver: zodResolver(createUserSchema),
+    watch,
+  } = useForm<UpdateUserFormData>({
+    resolver: zodResolver(updateUserSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      address: "",
-      role: "user"
-    }
+      name: user.name,
+      email: user.email,
+      address: user.address || "",
+      role: user.role,
+    },
   });
 
   const nameValue = watch("name");
@@ -37,7 +37,7 @@ export function CreateUserForm({ onSubmit, onCancel, isLoading }: CreateUserForm
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FormField
         label="Full Name"
-        placeholder="Enter full name (minimum 20 characters)"
+        placeholder="Enter full name"
         startIcon={<FiUser className="h-4 w-4" />}
         error={errors.name?.message}
         showCharCount
@@ -57,15 +57,6 @@ export function CreateUserForm({ onSubmit, onCancel, isLoading }: CreateUserForm
         {...register("email")}
       />
 
-      <PasswordField
-        label="Password"
-        placeholder="Create a password"
-        error={errors.password?.message}
-        showStrength
-        required
-        {...register("password")}
-      />
-
       <FormField
         label="Address"
         placeholder="Enter address (optional)"
@@ -81,10 +72,7 @@ export function CreateUserForm({ onSubmit, onCancel, isLoading }: CreateUserForm
         <label className="text-sm font-medium text-foreground mb-2 block">
           Role <span className="text-destructive">*</span>
         </label>
-        <select 
-          className="input"
-          {...register("role")}
-        >
+        <select className="input" {...register("role")}>
           <option value="user">User</option>
           <option value="admin">Administrator</option>
           <option value="store_owner">Store Owner</option>
@@ -95,21 +83,11 @@ export function CreateUserForm({ onSubmit, onCancel, isLoading }: CreateUserForm
       </div>
 
       <div className="flex gap-3 pt-4">
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={onCancel}
-          className="flex-1"
-        >
+        <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
           Cancel
         </Button>
-        <Button 
-          type="submit" 
-          loading={isLoading}
-          disabled={isLoading}
-          className="flex-1"
-        >
-          Create User
+        <Button type="submit" loading={isLoading} disabled={isLoading} className="flex-1">
+          Save Changes
         </Button>
       </div>
     </form>

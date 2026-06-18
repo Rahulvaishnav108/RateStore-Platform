@@ -42,4 +42,14 @@ const updateRating = async (ratingId, userId, { rating }) => {
   return updated[0];
 };
 
-module.exports = { submitRating, updateRating };
+const deleteRating = async (ratingId, userId) => {
+  const [result] = await pool.query('DELETE FROM ratings WHERE id = ? AND user_id = ?', [ratingId, userId]);
+  if (result.affectedRows === 0) {
+    const err = new Error('Rating not found or you do not have permission to delete it.');
+    err.statusCode = 404;
+    throw err;
+  }
+  return true;
+};
+
+module.exports = { submitRating, updateRating, deleteRating };

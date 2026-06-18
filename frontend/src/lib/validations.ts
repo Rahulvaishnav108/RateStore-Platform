@@ -64,7 +64,10 @@ export const createStoreSchema = z.object({
   name: nameSchema,
   email: emailSchema,
   address: addressSchema,
-  owner_id: z.number().optional().or(z.literal('')),
+  owner_id: z.union([z.number(), z.string()]).optional().transform((val) => {
+    if (val === '' || val === undefined || val === null) return undefined;
+    return typeof val === 'string' ? Number(val) : val;
+  }),
 });
 
 export const updateStoreSchema = createStoreSchema.partial();

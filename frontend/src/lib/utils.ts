@@ -65,14 +65,14 @@ export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): T {
-  let timeout: NodeJS.Timeout | null = null;
+  let timeout: ReturnType<typeof window.setTimeout> | null = null;
   return ((...args: any[]) => {
     const later = () => {
       timeout = null;
       func(...args);
     };
     if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    timeout = window.setTimeout(later, wait);
   }) as T;
 }
 
